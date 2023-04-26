@@ -1,3 +1,8 @@
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = './css/style.css';
+document.head.appendChild(link);
+
 const keysCode = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
   9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
   20, 65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13,

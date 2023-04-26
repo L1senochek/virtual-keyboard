@@ -1,0 +1,79 @@
+.body {
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wrapper__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wrapper__textarea {
+  display: flex;
+  width: 60%;
+  min-height: 20%;
+  height: 25%;
+  margin: 2% 0;
+}
+
+.wrapper__keyboard {
+  display: inline-grid;
+  grid-gap: 4px;
+  grid-template-columns: repeat(60, 13px);
+  grid-template-rows: repeat(5, 60px);
+  padding: 10px;
+  border: 1px solid #000;
+}
+
+.keyboard__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: auto/span 4;
+  border-radius: 5px;
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+.wrapper__title,
+.wrapper__description,
+.wrapper__switch-language {
+  margin: 0;
+  padding: 1% 0;
+  text-align: center;
+}
+
+.switch-language_color {
+  color: #a100ff;
+}
+
+.keyboard__key.k8 { 
+  grid-column: auto/span 8;
+}
+
+.keyboard__key.k9 { 
+  grid-column: auto/span 8;
+}
+
+.keyboard__key.k20 {
+  grid-column: auto/span 9;
+}
+
+.keyboard__key.k13 {
+  grid-column: auto/span 7;
+}
+
+.keyboard__key.k16 {
+  grid-column: auto/span 8;
+}
+
+.keyboard__key.k32 {
+  grid-column: auto/span 28;
+}
