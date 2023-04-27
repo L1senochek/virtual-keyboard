@@ -50,6 +50,7 @@ textarea.name = 'text';
 textarea.id = 'textarea-keys';
 textarea.cols = 30;
 textarea.rows = 10;
+textarea.autofocus = 'autofocus';
 
 keyboard.classList.add('wrapper__keyboard');
 keyboard.classList.add('keyboard');
@@ -65,7 +66,7 @@ wrapperContent.append(title, textarea, keyboard, description, switchLanguage);
 function createKeys() {
   let str = '';
   for (let i = 0; i < keys.length; i++) {
-    str += `<div class="keyboard__key key__${keysCode[i]}" data='${keysCode[i]}'>${keys[i]}</div>`;
+    str += `<div class="keyboard__key key__${keysCode[i]}" data="${keysCode[i]}" data-id="${keysCodeId[i]}">${keys[i]}</div>`;
   }
   keyboard.innerHTML = str;
 }
@@ -75,12 +76,13 @@ createKeys();
 
 document.onkeydown = function (event) {
   console.log(event);
-  console.log(event.code);
-  console.log(event.key);
+  console.log(event.code); // KeyL
+  console.log(event.key); // l
 };
 
 function pressKey(event) {
   document.querySelector(`.keyboard__key[data='${event.code}']`).classList.add('active');
+  textarea.focus();
 }
 
 document.addEventListener('keydown', pressKey);
@@ -90,3 +92,46 @@ function releaseKey(event) {
 }
 
 document.addEventListener('keyup', releaseKey);
+
+///
+
+function mouseClickDown(e) {
+  textarea.focus();
+
+  if (e.target.classList.contains('keyboard__key')) {
+    console.log('target', e.target.getAttribute('data'));
+    console.log('target', e.target.getAttribute('data-id'));
+    e.target.classList.add('active');
+    const dataAtr = e.target.getAttribute('data');
+    const dataAtrId = e.target.getAttribute('data-id');
+    // !== 'Backspace' && dataAtr !== 'Tab' && dataAtr !== 'CapsLock' && dataAtr !== 'CapsLock'
+    if (dataAtrId >= 65 && dataAtrId <= 90) {
+      const getContent = e.target.textContent;
+      console.log('targettextContent', e.target.textContent);
+      console.log('textareaContent', textarea.value);
+      console.log('textareaContent', textarea.textContent);
+      textarea.textContent += getContent;
+    }
+    if (dataAtr === 'Space') {
+      textarea.textContent += ' ';
+    }
+    if (dataAtr === 'Backspace') {
+      textarea.textContent = textarea.textContent.substring(0, textarea.textContent.length - 1);
+    }
+    if (dataAtr === 'Enter') {
+      textarea.textContent += '\n';
+    }
+  }
+}
+
+keyboard.addEventListener('mousedown', mouseClickDown);
+
+function mouseClickUp(e) {
+  if (e.target.classList.contains('keyboard__key')) {
+    // e.target.classList.remove('active');
+    console.log(e.target.classList.contains('keyboard__key'));
+    setTimeout(() => e.target.classList.remove('active'), 400);
+  }
+}
+
+keyboard.addEventListener('mouseup', mouseClickUp);
