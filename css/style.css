@@ -42,6 +42,10 @@
   cursor: pointer;
 }
 
+.active {
+  background-color: #a100ff;
+}
+
 .wrapper__title,
 .wrapper__description,
 .wrapper__switch-language {
@@ -54,26 +58,27 @@
   color: #a100ff;
 }
 
-.keyboard__key.k8 { 
+.keyboard__key.key__Backspace { 
   grid-column: auto/span 8;
 }
 
-.keyboard__key.k9 { 
+.keyboard__key.key__Tab { 
   grid-column: auto/span 8;
 }
 
-.keyboard__key.k20 {
+.keyboard__key.key__CapsLock {
   grid-column: auto/span 9;
 }
 
-.keyboard__key.k13 {
+.keyboard__key.key__Enter {
   grid-column: auto/span 7;
 }
 
-.keyboard__key.k16 {
+.keyboard__key.key__ShiftLeft,
+.keyboard__key.key__ShiftRight {
   grid-column: auto/span 8;
 }
 
-.keyboard__key.k32 {
+.keyboard__key.key__Space {
   grid-column: auto/span 28;
 }
