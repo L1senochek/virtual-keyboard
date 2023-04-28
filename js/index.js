@@ -10,6 +10,7 @@ const keyboard = document.createElement('div');
 const description = document.createElement('p');
 const switchLanguage = document.createElement('p');
 const capsLockIndicator = document.createElement('span');
+const linkIco = document.createElement('link');
 
 const keysCodeId = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
   9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
@@ -34,9 +35,12 @@ let capsLockCkecked = false;
 link.rel = 'stylesheet';
 link.href = './css/style.css';
 
+linkIco.rel = 'icon';
+linkIco.href = './assets/img/keyboard.ico';
+
 titleTag.innerText = 'Virtual keyboard';
 
-headTag.append(link, titleTag);
+headTag.append(link, linkIco, titleTag);
 
 bodyTag.classList.add('body');
 wrapper.classList.add('wrapper');
