@@ -13,6 +13,8 @@
   padding: 0;
   font-size: 1em;
   font-family: 'Roboto', "cursive", "sans-serif";
+  background-color: #000;
+  color: #fff;
 }
 
 .wrapper {
@@ -25,6 +27,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 1% 4%;
+  margin: 2% 0;
+  background-color: #0b0b0b;
+  box-shadow: 0 0 10px 1px #00fdff;
+  border-radius: 10px;
 }
 
 .wrapper__textarea {
@@ -33,7 +40,19 @@
   min-height: 20%;
   height: 25%;
   margin: 2% 0;
+  padding: 10px;
   font-size: 1.5em;
+  color: #00fdff;
+  background-image: radial-gradient(ellipse at 30% 10%, #003c3b, #050505);
+  border: 2px solid #ff00fe;
+  border-radius: 5px;
+}
+
+.wrapper__textarea:focus,
+.wrapper__textarea:active {
+  border: 2px solid #ff00fe;
+  box-shadow: 1px 1px 2px 0 #ab00ff;
+  outline: none;
 }
 
 .wrapper__keyboard {
@@ -42,7 +61,13 @@
   grid-template-columns: repeat(60, 13px);
   grid-template-rows: repeat(5, 60px);
   padding: 10px;
-  border: 1px solid #000;
+  /* border: 1px solid #00fdff; */
+  border-radius: 10px;
+  cursor: default;
+  background-image: radial-gradient(ellipse at 30% 10%, #393939d1, #050505);
+  box-shadow: 0 0 10px 1px #00fdff;
+  transition: box-shadow 0.3s;
+  user-select: none;
 }
 
 .keyboard__key {
@@ -51,12 +76,20 @@
   justify-content: center;
   grid-column: auto/span 4;
   border-radius: 5px;
-  border: 1px solid #000;
+  border: 1px solid #ff00fe;
+  box-shadow: 0 0 10px 1px #ab00ff;
   cursor: pointer;
+  color: #00fdff;
+  text-shadow: 0 0 10px #00fdff;
+  background-color: transparent;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
 }
 
 .active {
-  background-color: #a100ff;
+  background-color: #df00ff;
+  box-shadow: 0 0 0 0 transparent;
+  color: #00fdff;
+  text-shadow: 0 0 10px #00fdff;
 }
 
 .wrapper__title,
@@ -66,15 +99,17 @@
   margin: 0;
   padding: 1% 0;
   text-align: center;
+  color: #00fdff;
 }
 
 .wrapper__description,
 .wrapper__switch-language {
   font-size: 1.5em;
+  color: #ff00fe;
 }
 
 .switch-language_color {
-  color: #a100ff;
+  color: #00fdff;
 }
 
 .keyboard__key.key__Backspace { 
@@ -103,7 +138,7 @@
 }
 
 .capslock {
-  border: 1px #000000 solid;
+  border: 1px #ab00ff solid;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -111,6 +146,7 @@
 }
 
 .capslock.capslock__active {
-  border: 1px #dd00ff solid;
-  background: #a100ff;
+  border: 1px #ab00ff solid;
+  background: #ff00fe;
+  box-shadow: 0 0 10px 1px #ab00ff;
 }
