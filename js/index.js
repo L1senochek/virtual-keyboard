@@ -40,7 +40,7 @@ headTag.append(link, titleTag);
 
 bodyTag.classList.add('body');
 wrapper.classList.add('wrapper');
-bodyTag.appendChild(wrapper);
+bodyTag.prepend(wrapper);
 
 wrapperContent.classList.add('wrapper__content');
 wrapper.appendChild(wrapperContent);
@@ -53,7 +53,7 @@ textarea.name = 'text';
 textarea.id = 'textarea-keys';
 textarea.cols = 30;
 textarea.rows = 10;
-// textarea.autofocus = 'autofocus';
+textarea.autofocus = 'autofocus';
 
 keyboard.classList.add('wrapper__keyboard');
 keyboard.classList.add('keyboard');
@@ -75,6 +75,11 @@ function createKeys() {
 }
 createKeys();
 
+const capsKey = document.querySelector(`[data='CapsLock']`);
+capsLockIndicator.classList.add('capslock'); // capslock__active
+capsKey.prepend(capsLockIndicator);
+// console.log('capsKey', capsKey, capsLockIndicator);
+
 // functional
 
 document.onkeydown = function (event) {
@@ -95,6 +100,11 @@ function pressKey(event) {
     console.log(textarea.value);
     console.log(textarea.textContent.length);
   }
+  console.log(event);
+  if (event.code === 'Tab' && document.querySelector(`.keyboard__key[data='Tab']`).classList.contains('active')) {
+    textarea.value += '\t';
+    event.preventDefault();
+  }
 }
 
 document.addEventListener('keydown', pressKey);
@@ -107,18 +117,20 @@ document.addEventListener('keyup', releaseKey);
 
 ///
 function capsLock() {
-  const capsKey = document.querySelector(`[data='CapsLock']`);
-  capsLockIndicator.classList.add('capslock'); // capslock__active
-  capsKey.prepend(capsLockIndicator);
   console.log('capsKey', capsKey, capsLockIndicator);
   if (capsLockCkecked === false) {
-    
+    capsLockIndicator.classList.remove('capslock__active');
+    capsLockCkecked = true;
+  } else {
+    capsLockIndicator.classList.add('capslock__active');
+    capsLockCkecked = false;
   }
 }
 capsLock();
 
 function mouseClickDown(e) {
   textarea.focus();
+  console.log(e);
 
   if (e.target.classList.contains('keyboard__key')) {
     console.log('target', e.target);
@@ -126,26 +138,35 @@ function mouseClickDown(e) {
     console.log('target', e.target.getAttribute('data-id'));
     e.target.classList.add('active');
     const dataAtr = e.target.getAttribute('data');
-    const dataAtrId = e.target.getAttribute('data-id');
-    if (dataAtrId >= 65 && dataAtrId <= 90) {
+    const atrId = e.target.getAttribute('data-id');
+    if (atrId >= 65 && atrId <= 90) {
       const getContent = e.target.textContent;
       console.log('targettextContent', e.target.textContent);
       console.log('textareaContent', textarea.value);
       console.log('textareaContent', textarea.textContent);
-      textarea.textContent += getContent;
+      // textarea.textContent += getContent;
+      textarea.value += textarea.textContent + getContent;
+    }
+    if ((atrId > 47 && atrId < 58) || (atrId > 185 && atrId < 193) || (atrId > 218 && atrId < 223)) {
+      const getContent = e.target.textContent;
+      console.log(getContent[getContent.length - 1]);
+      console.log(textarea.textContent);
+      textarea.value += textarea.textContent + getContent[getContent.length - 1];
     }
     if (dataAtr === 'Space') {
-      textarea.textContent += ' ';
+      textarea.value += ' ';
     }
     if (dataAtr === 'Backspace') {
-      textarea.textContent = textarea.textContent.substring(0, textarea.textContent.length - 1);
+      textarea.value = textarea.value.substring(0, textarea.value.length - 1);
     }
     if (dataAtr === 'Enter') {
-      textarea.textContent += '\n';
+      textarea.value += '\n';
     }
     if (dataAtr === 'CapsLock') {
-      console.log(dataAtr, dataAtrId);
       capsLock();
+    }
+    if (dataAtr === 'Tab') {
+      textarea.value += '\t';
     }
   }
 }
@@ -154,9 +175,9 @@ keyboard.addEventListener('mousedown', mouseClickDown);
 
 function mouseClickUp(e) {
   if (e.target.classList.contains('keyboard__key')) {
-    // e.target.classList.remove('active');
+    e.target.classList.remove('active');
     // console.log(e.target.classList.contains('keyboard__key'));
-    setTimeout(() => e.target.classList.remove('active'), 400);
+    // setTimeout(() => e.target.classList.remove('active'), 200);
   }
 }
 
