@@ -13,8 +13,9 @@
   padding: 0;
   font-size: 1em;
   font-family: 'Roboto', "cursive", "sans-serif";
-  background-color: #000;
   color: #fff;
+  background: url("../assets/img/lines.png");
+  background-size: 100%;
 }
 
 .wrapper {
@@ -32,6 +33,7 @@
   background-color: #0b0b0b;
   box-shadow: 0 0 10px 1px #00fdff;
   border-radius: 10px;
+  border: 2px solid #00fdff;
 }
 
 .wrapper__textarea {
@@ -61,7 +63,6 @@
   grid-template-columns: repeat(60, 13px);
   grid-template-rows: repeat(5, 60px);
   padding: 10px;
-  /* border: 1px solid #00fdff; */
   border-radius: 10px;
   cursor: default;
   background-image: radial-gradient(ellipse at 30% 10%, #393939d1, #050505);
