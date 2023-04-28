@@ -9,6 +9,7 @@ const textarea = document.createElement('textarea');
 const keyboard = document.createElement('div');
 const description = document.createElement('p');
 const switchLanguage = document.createElement('p');
+const capsLockIndicator = document.createElement('span');
 
 const keysCodeId = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
   9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
@@ -27,6 +28,8 @@ const keys = ['~ `', '! 1', '@ 2', '# 3', '$ 4', '% 5', '^ 6', '& 7', '* 8', '( 
   'capslock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ': ;', `" '`, 'enter',
   'shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '< ,', '> .', '? /', '🠕', 'shift',
   'ctrl', 'win', 'alt', 'space', 'alt', '🠔', '🠗', '🠖', 'ctrl'];
+
+let capsLockCkecked = false;
 
 link.rel = 'stylesheet';
 link.href = './css/style.css';
@@ -50,7 +53,7 @@ textarea.name = 'text';
 textarea.id = 'textarea-keys';
 textarea.cols = 30;
 textarea.rows = 10;
-textarea.autofocus = 'autofocus';
+// textarea.autofocus = 'autofocus';
 
 keyboard.classList.add('wrapper__keyboard');
 keyboard.classList.add('keyboard');
@@ -83,6 +86,15 @@ document.onkeydown = function (event) {
 function pressKey(event) {
   document.querySelector(`.keyboard__key[data='${event.code}']`).classList.add('active');
   textarea.focus();
+
+  if (textarea.textContent) {
+    textarea.selectionStart = textarea.textContent.length + 1;
+    textarea.selectionEnd = textarea.textContent.length + 1;
+
+    textarea.textContent += event.key;
+    console.log(textarea.value);
+    console.log(textarea.textContent.length);
+  }
 }
 
 document.addEventListener('keydown', pressKey);
@@ -94,17 +106,27 @@ function releaseKey(event) {
 document.addEventListener('keyup', releaseKey);
 
 ///
+function capsLock() {
+  const capsKey = document.querySelector(`[data='CapsLock']`);
+  capsLockIndicator.classList.add('capslock'); // capslock__active
+  capsKey.prepend(capsLockIndicator);
+  console.log('capsKey', capsKey, capsLockIndicator);
+  if (capsLockCkecked === false) {
+    
+  }
+}
+capsLock();
 
 function mouseClickDown(e) {
   textarea.focus();
 
   if (e.target.classList.contains('keyboard__key')) {
+    console.log('target', e.target);
     console.log('target', e.target.getAttribute('data'));
     console.log('target', e.target.getAttribute('data-id'));
     e.target.classList.add('active');
     const dataAtr = e.target.getAttribute('data');
     const dataAtrId = e.target.getAttribute('data-id');
-    // !== 'Backspace' && dataAtr !== 'Tab' && dataAtr !== 'CapsLock' && dataAtr !== 'CapsLock'
     if (dataAtrId >= 65 && dataAtrId <= 90) {
       const getContent = e.target.textContent;
       console.log('targettextContent', e.target.textContent);
@@ -121,6 +143,10 @@ function mouseClickDown(e) {
     if (dataAtr === 'Enter') {
       textarea.textContent += '\n';
     }
+    if (dataAtr === 'CapsLock') {
+      console.log(dataAtr, dataAtrId);
+      capsLock();
+    }
   }
 }
 
@@ -129,7 +155,7 @@ keyboard.addEventListener('mousedown', mouseClickDown);
 function mouseClickUp(e) {
   if (e.target.classList.contains('keyboard__key')) {
     // e.target.classList.remove('active');
-    console.log(e.target.classList.contains('keyboard__key'));
+    // console.log(e.target.classList.contains('keyboard__key'));
     setTimeout(() => e.target.classList.remove('active'), 400);
   }
 }

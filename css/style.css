@@ -82,3 +82,16 @@
 .keyboard__key.key__Space {
   grid-column: auto/span 28;
 }
+
+.capslock {
+  border: 1px #000000 solid;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin: 0 3%;
+}
+
+.capslock.capslock__active {
+  border: 1px #dd00ff solid;
+  background: #a100ff;
+}
