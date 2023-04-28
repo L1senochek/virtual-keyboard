@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'Inika';
-  src: url("./assets/fonts/Inika-Regular.ttf");
+  src: url("../assets/fonts/Inika-Regular.ttf");
 }
 
 @font-face {
   font-family: 'Roboto';
-  src: url("./assets/fonts/Roboto-Regular.ttf");
+  src: url("../assets/fonts/Roboto-Regular.ttf");
 }
 
 .body {
