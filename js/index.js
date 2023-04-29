@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const headTag = document.head;
 const bodyTag = document.body;
 const link = document.createElement('link');
@@ -64,6 +63,9 @@ const objShiftEvent = {
   Slash: { en: '?', ru: ',' },
 };
 
+const excepsionsRu = ['186', '188', '190', '219', '221', '222', '192'];
+const excSymRu = ['49', '50', '51', '52', '53', '54', '55', '56', '57', '48', '189', '187', '191', '220'];
+
 let lang;
 let keys;
 // //////////////////////////////////////////
@@ -76,24 +78,30 @@ function languageRu() {
   lang = 'ru';
 }
 
-function checkCurrentLanguage() {
-  if (!lang) {
-    languageEn();
-  }
-}
-checkCurrentLanguage();
+// function checkCurrentLanguage() {
+//   if (!lang) {
+//     languageEn();
+//   }
+// }
 
 function setLocalSrotageLang() {
   localStorage.setItem('lang', lang);
 }
 
-setLocalSrotageLang();
-
 function getLocalSrotageLang() {
   lang = localStorage.getItem('lang');
 }
 
-getLocalSrotageLang();
+function checkCurrentLanguage() {
+  if (!lang && localStorage.getItem('lang') === null) {
+    languageEn();
+    setLocalSrotageLang();
+  } else if (!lang && localStorage.getItem('lang') !== null) {
+    getLocalSrotageLang();
+  }
+}
+checkCurrentLanguage();
+
 // //////////////////////////////////////////
 
 let capsLockCkecked = false;
@@ -333,7 +341,23 @@ function mouseClickDown(e) {
     }
     if ((atrI > 47 && atrI < 58) || (atrI > 185 && atrI < 193) || (atrI > 218 && atrI < 223)) {
       const getContent = e.target.textContent;
-      textarea.value += textarea.textContent + getContent[getContent.length - 1];
+      if (lang === 'ru' && capsLockCkecked === true && shiftCkecked !== true) {
+        if (excepsionsRu.includes(atrI)) {
+          textarea.value += textarea.textContent + getContent.toUpperCase();
+        }
+        if (excSymRu.includes(atrI)) {
+          textarea.value += textarea.textContent + getContent[getContent.length - 1];
+        }
+      } else if (lang === 'ru' && capsLockCkecked === true && shiftCkecked === true) {
+        if (excepsionsRu.includes(atrI)) {
+          textarea.value += textarea.textContent + getContent.toLowerCase();
+        }
+        if (excSymRu.includes(atrI)) {
+          textarea.value += textarea.textContent + getContent[0];
+        }
+      } else {
+        textarea.value += textarea.textContent + getContent[getContent.length - 1];
+      }
     }
     if (dataAtr === 'Space') {
       textarea.value += ' ';
