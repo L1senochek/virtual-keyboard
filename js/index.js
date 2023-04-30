@@ -3,7 +3,7 @@ const bodyTag = document.body;
 const link = document.createElement('link');
 const linkIco = document.createElement('link');
 const titleTag = document.createElement('title');
-const wrapper = document.createElement('div');
+const wrapper = document.createElement('main');
 const wrapperContent = document.createElement('div');
 const title = document.createElement('h1');
 const textarea = document.createElement('textarea');
@@ -68,6 +68,9 @@ const excSymRu = ['49', '50', '51', '52', '53', '54', '55', '56', '57', '48', '1
 const excLetterRu = ['Backquote', 'BracketLeft', 'BracketRight', 'Semicolon', 'Quote', 'Comma', 'Period'];
 let lang;
 let keys;
+let startIndexEnter = 0;
+let currentSeletctionStart;
+let enterPosition;
 // //////////////////////////////////////////
 
 function languageEn() {
@@ -114,6 +117,7 @@ function createHeadTag() {
   headTag.append(link, linkIco, titleTag);
 }
 createHeadTag();
+
 function createStructure() {
   bodyTag.classList.add('body');
   wrapper.classList.add('wrapper');
@@ -150,10 +154,12 @@ function createCapsLockIndikator() {
   capsLockIndicator.classList.add('capslock');
   capsKey.prepend(capsLockIndicator);
 }
+
 function pressKeyAnimation(event) {
   document.querySelector(`.keyboard__key[data='${event.code}']`).classList.add('active');
 }
 window.addEventListener('keydown', pressKeyAnimation);
+
 function releaseKeyAnimation(event) {
   document.querySelector(`.keyboard__key[data='${event.code}']`).classList.remove('active');
 }
@@ -234,55 +240,55 @@ function pressKey(event) {
   console.log('keyActive', keyActive.textContent);
   if (event.code === 'Tab' && shiftCkecked === false) {
     event.preventDefault();
-    textarea.value += '\t';
+    textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
   } else if (!arrShiftEvent.includes(event.code) && shiftCkecked === false) {
     event.preventDefault();
     if (Object.keys(objShiftEvent).includes(event.code)) {
       if (capsLockCkecked === true && lang === 'ru' && excLetterRu.includes(event.code)) {
-        textarea.value += keyActive.textContent.toUpperCase();
+        textarea.setRangeText(keyActive.textContent.toUpperCase(), textarea.selectionStart, textarea.selectionEnd, 'end');
       } else {
-        textarea.value += keyActive.textContent[keyActive.textContent.length - 1];
+        const text = keyActive.textContent[keyActive.textContent.length - 1];
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       }
     } else if (event.code === 'Space') {
-      textarea.value += ' ';
+      textarea.setRangeText(' ', textarea.selectionStart, textarea.selectionEnd, 'end');
     } else if (capsLockCkecked === true) {
-      textarea.value += keyActive.textContent.toUpperCase();
+      textarea.setRangeText(keyActive.textContent.toUpperCase(), textarea.selectionStart, textarea.selectionEnd, 'end');
     } else {
-      textarea.value += keyActive.textContent;
+      textarea.setRangeText(keyActive.textContent, textarea.selectionStart, textarea.selectionEnd, 'end');
     }
   }
 
   if (shiftCkecked === true && event) {
     if (event.code === 'Space') {
       event.preventDefault();
-      textarea.value += ' ';
+      textarea.setRangeText(' ', textarea.selectionStart, textarea.selectionEnd, 'end');
     } else if (event.code === 'Tab') {
       event.preventDefault();
-      textarea.value += '\t';
+      textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
     } else if (!arrShiftEvent.includes(event.code)) {
       event.preventDefault();
       if (Object.keys(objShiftEvent).includes(event.code)) {
         if (lang === 'ru' && excLetterRu.includes(event.code) && capsLockCkecked === true) {
-          textarea.value += keyActive.textContent;
+          textarea.setRangeText(keyActive.textContent, textarea.selectionStart, textarea.selectionEnd, 'end');
         } else if (lang === 'ru' && excLetterRu.includes(event.code) && capsLockCkecked === false) {
-          textarea.value += keyActive.textContent.toUpperCase();
+          textarea.setRangeText(keyActive.textContent.toUpperCase(), textarea.selectionStart, textarea.selectionEnd, 'end');
         } else {
-          textarea.value += keyActive.textContent[0];
+          textarea.setRangeText(keyActive.textContent[0], textarea.selectionStart, textarea.selectionEnd, 'end');
         }
-        textarea.selectionStart = textarea.value.length;
       } else if (capsLockCkecked === true) {
         event.preventDefault();
-        textarea.value += textarea.textContent + keyActive.textContent.toLowerCase();
-        textarea.selectionStart = textarea.value.length;
+        const text = textarea.textContent + keyActive.textContent.toLowerCase();
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       } else {
         event.preventDefault();
-        textarea.value += textarea.textContent + keyActive.textContent.toUpperCase();
-        textarea.selectionStart = textarea.value.length;
+        const text = textarea.textContent + keyActive.textContent.toUpperCase();
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       }
     }
   }
   if (event.code === 'Tab' && document.querySelector(`.keyboard__key[data='Tab']`).classList.contains('active')) {
-    textarea.value += '\t';
+    textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
     event.preventDefault();
   }
   if (event.code === 'CapsLock') {
@@ -341,55 +347,109 @@ function mouseClickDown(e) {
     e.target.classList.add('active');
     const dataAtr = e.target.getAttribute('data');
     const atrI = e.target.getAttribute('data-id');
+    if (dataAtr === 'ArrowLeft') {
+      textarea.focus();
+      textarea.selectionStart = Math.max(0, textarea.selectionStart - 1);
+      textarea.selectionEnd = textarea.selectionStart;
+    } else if (dataAtr === 'ArrowRight') {
+      textarea.focus();
+      textarea.selectionStart = Math.min(textarea.textLength, textarea.selectionEnd + 1);
+      textarea.selectionEnd = textarea.selectionStart;
+    } else if (dataAtr === 'ArrowUp') {
+      if (textarea.value.length > 60 && textarea.selectionStart > 60) {
+        // textarea.selectionStart -= 60;
+        let str = textarea.value;
+        str = textarea.value.slice(0, textarea.selectionStart);
+        // str.length = textarea.selectionStart - 1;
+        textarea.selectionStart = Math.max(str.lastIndexOf('\n'), textarea.selectionStart - 60, 0);
+        // str.length = textarea.selectionStart;
+        textarea.selectionEnd = textarea.selectionStart;
+      } else {
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = textarea.selectionStart;
+      }
+    } else if (dataAtr === 'ArrowDown') {
+      if (textarea.value.length > 60) {
+        // textarea.selectionStart -= 60;
+        const str = textarea.value;
+        // let currentSeletctionStart = textarea.selectionStart;
+        if (textarea.selectionStart === currentSeletctionStart) {
+          enterPosition = str.indexOf('\n', startIndexEnter);
+        } else {
+          startIndexEnter = textarea.selectionStart;
+          enterPosition = str.indexOf('\n', startIndexEnter);
+        }
+        // str = textarea.value.slice(0, textarea.selectionStart);
+        // str.length = textarea.selectionStart - 1;
+        // let enterPosition = str.indexOf('\n', n);
+        console.log(enterPosition);
+        // let enterNextPosition = str.indexOf();
+        textarea.selectionStart = Math.min(str.length, textarea.selectionStart + 60, enterPosition);
+        // str.length = textarea.selectionStart;
+        currentSeletctionStart = textarea.selectionStart;
+        startIndexEnter = enterPosition + 1;
+        textarea.selectionEnd = textarea.selectionStart;
+      } else {
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = textarea.selectionStart;
+      }
+    }
     if (atrI >= 65 && atrI <= 90) {
       if (capsLockCkecked === true && shiftCkecked !== true) {
         const getContentUp = e.target.textContent;
-        textarea.value += textarea.textContent + getContentUp.toUpperCase();
+        const text = textarea.textContent + getContentUp.toUpperCase();
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       } else if (capsLockCkecked === true && shiftCkecked === true) {
         const getContentUp = e.target.textContent;
-        textarea.value += textarea.textContent + getContentUp.toLowerCase();
+        const text = textarea.textContent + getContentUp.toLowerCase();
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       } else {
         const getContent = e.target.textContent;
         console.log('targettextContent', e.target.textContent);
         console.log('textareaContent', textarea.value);
         console.log('textareaContent', textarea.textContent);
-        textarea.value += textarea.textContent + getContent;
+        textarea.setRangeText(getContent, textarea.selectionStart, textarea.selectionEnd, 'end');
       }
     }
     if ((atrI > 47 && atrI < 58) || (atrI > 185 && atrI < 193) || (atrI > 218 && atrI < 223)) {
       const getContent = e.target.textContent;
       if (lang === 'ru' && capsLockCkecked === true && shiftCkecked !== true) {
         if (excepsionsRu.includes(atrI)) {
-          textarea.value += textarea.textContent + getContent.toUpperCase();
+          const text = textarea.textContent + getContent.toUpperCase();
+          textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
         }
         if (excSymRu.includes(atrI)) {
-          textarea.value += textarea.textContent + getContent[getContent.length - 1];
+          const text = textarea.textContent + getContent[getContent.length - 1];
+          textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
         }
       } else if (lang === 'ru' && capsLockCkecked === true && shiftCkecked === true) {
         if (excepsionsRu.includes(atrI)) {
-          textarea.value += textarea.textContent + getContent.toLowerCase();
+          const text = textarea.textContent + getContent.toLowerCase();
+          textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
         }
         if (excSymRu.includes(atrI)) {
-          textarea.value += textarea.textContent + getContent[0];
+          const text = textarea.textContent + getContent[0];
+          textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
         }
       } else {
-        textarea.value += textarea.textContent + getContent[getContent.length - 1];
+        const text = textarea.textContent + getContent[getContent.length - 1];
+        textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end');
       }
     }
     if (dataAtr === 'Space') {
-      textarea.value += ' ';
+      textarea.setRangeText(' ', textarea.selectionStart, textarea.selectionEnd, 'end');
     }
     if (dataAtr === 'Backspace') {
-      textarea.value = textarea.value.substring(0, textarea.value.length - 1);
+      textarea.setRangeText('', textarea.selectionStart - 1, textarea.selectionEnd, 'end');
     }
     if (dataAtr === 'Enter') {
-      textarea.value += '\n';
+      textarea.setRangeText('\n', textarea.selectionStart, textarea.selectionEnd, 'end');
     }
     if (dataAtr === 'CapsLock') {
       capsLock();
     }
     if (dataAtr === 'Tab') {
-      textarea.value += '\t';
+      textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
     }
     if (dataAtr === 'ShiftLeft' || dataAtr === 'ShiftRight') {
       shiftCkecked = true;
@@ -401,8 +461,6 @@ keyboard.addEventListener('mousedown', mouseClickDown);
 
 function mouseClickUp(e) {
   if (e.target.classList.contains('keyboard__key')) {
-    // e.target.classList.remove('active');
-    // console.log(e.target.classList.contains('keyboard__key'));
     setTimeout(() => e.target.classList.remove('active'), 200);
     textarea.focus();
     const dataAtr = e.target.getAttribute('data');
@@ -413,3 +471,4 @@ function mouseClickUp(e) {
 }
 
 keyboard.addEventListener('mouseup', mouseClickUp);
+keyboard.addEventListener('mouseout', mouseClickUp);

@@ -38,7 +38,7 @@
 
 .wrapper__textarea {
   display: flex;
-  width: 60%;
+  width: 645px;
   min-height: 20%;
   height: 25%;
   margin: 2% 0;
@@ -48,6 +48,7 @@
   background-image: radial-gradient(ellipse at 30% 10%, #003c3b, #050505);
   border: 2px solid #ff00fe;
   border-radius: 5px;
+  resize: none;
 }
 
 .wrapper__textarea:focus,
