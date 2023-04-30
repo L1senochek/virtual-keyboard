@@ -1,6 +1,7 @@
 const headTag = document.head;
 const bodyTag = document.body;
 const link = document.createElement('link');
+const linkIco = document.createElement('link');
 const titleTag = document.createElement('title');
 const wrapper = document.createElement('div');
 const wrapperContent = document.createElement('div');
@@ -10,7 +11,6 @@ const keyboard = document.createElement('div');
 const description = document.createElement('p');
 const switchLanguage = document.createElement('p');
 const capsLockIndicator = document.createElement('span');
-const linkIco = document.createElement('link');
 
 const keysCodeId = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
   9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
@@ -65,7 +65,7 @@ const objShiftEvent = {
 
 const excepsionsRu = ['186', '188', '190', '219', '221', '222', '192'];
 const excSymRu = ['49', '50', '51', '52', '53', '54', '55', '56', '57', '48', '189', '187', '191', '220'];
-
+const excLetterRu = ['Backquote', 'BracketLeft', 'BracketRight', 'Semicolon', 'Quote', 'Comma', 'Period'];
 let lang;
 let keys;
 // //////////////////////////////////////////
@@ -77,12 +77,6 @@ function languageEn() {
 function languageRu() {
   lang = 'ru';
 }
-
-// function checkCurrentLanguage() {
-//   if (!lang) {
-//     languageEn();
-//   }
-// }
 
 function setLocalSrotageLang() {
   localStorage.setItem('lang', lang);
@@ -235,30 +229,54 @@ function capsLock() {
 }
 
 function pressKey(event) {
-  console.log('event11111', event);
-  // document.querySelector(`.keyboard__key[data='${event.code}']`).classList.add('active');
+  const keyActive = document.querySelector(`.keyboard__key[data='${event.code}']`);
   textarea.focus();
+  console.log('keyActive', keyActive.textContent);
+  if (event.code === 'Tab' && shiftCkecked === false) {
+    event.preventDefault();
+    textarea.value += '\t';
+  } else if (!arrShiftEvent.includes(event.code) && shiftCkecked === false) {
+    event.preventDefault();
+    if (Object.keys(objShiftEvent).includes(event.code)) {
+      if (capsLockCkecked === true && lang === 'ru' && excLetterRu.includes(event.code)) {
+        textarea.value += keyActive.textContent.toUpperCase();
+      } else {
+        textarea.value += keyActive.textContent[keyActive.textContent.length - 1];
+      }
+    } else if (event.code === 'Space') {
+      textarea.value += ' ';
+    } else if (capsLockCkecked === true) {
+      textarea.value += keyActive.textContent.toUpperCase();
+    } else {
+      textarea.value += keyActive.textContent;
+    }
+  }
 
   if (shiftCkecked === true && event) {
-    if (!arrShiftEvent.includes(event.code)) {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      textarea.value += ' ';
+    } else if (event.code === 'Tab') {
+      event.preventDefault();
+      textarea.value += '\t';
+    } else if (!arrShiftEvent.includes(event.code)) {
+      event.preventDefault();
       if (Object.keys(objShiftEvent).includes(event.code)) {
-        let language;
-        checkCurrentLanguage();
-        if (lang === 'en') {
-          language = 'en';
-        } else if (lang === 'ru') {
-          language = 'ru';
+        if (lang === 'ru' && excLetterRu.includes(event.code) && capsLockCkecked === true) {
+          textarea.value += keyActive.textContent;
+        } else if (lang === 'ru' && excLetterRu.includes(event.code) && capsLockCkecked === false) {
+          textarea.value += keyActive.textContent.toUpperCase();
+        } else {
+          textarea.value += keyActive.textContent[0];
         }
-        event.preventDefault();
-        textarea.value += textarea.textContent + objShiftEvent[event.code][language];
         textarea.selectionStart = textarea.value.length;
       } else if (capsLockCkecked === true) {
         event.preventDefault();
-        textarea.value += textarea.textContent + event.key.toLowerCase();
+        textarea.value += textarea.textContent + keyActive.textContent.toLowerCase();
         textarea.selectionStart = textarea.value.length;
       } else {
         event.preventDefault();
-        textarea.value += textarea.textContent + event.key.toUpperCase();
+        textarea.value += textarea.textContent + keyActive.textContent.toUpperCase();
         textarea.selectionStart = textarea.value.length;
       }
     }
@@ -335,7 +353,6 @@ function mouseClickDown(e) {
         console.log('targettextContent', e.target.textContent);
         console.log('textareaContent', textarea.value);
         console.log('textareaContent', textarea.textContent);
-        // textarea.textContent += getContent;
         textarea.value += textarea.textContent + getContent;
       }
     }
