@@ -9,9 +9,5 @@
     "parserOptions": {
         "ecmaVersion": "latest"
     },
-    "rules": {
-        "no-console": "off",
-        "quotes": ["error", "single", { "allowTemplateLiterals": true }],
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
-    }
+    "rules": {}
 }
