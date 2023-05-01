@@ -9,5 +9,10 @@
     "parserOptions": {
         "ecmaVersion": "latest"
     },
-    "rules": {}
+    "rules": {
+        "import/extensions": [
+            "error", "ignorePackages"
+        ]
+    }
+    
 }
